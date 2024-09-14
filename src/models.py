@@ -17,10 +17,14 @@ class MyEnum(enum.Enum):
 
 class Follower(Base):
     __tablename__ = "follower"
+    id = Column(Integer, primary_key=True)
     user_from_id =  Column(Integer, ForeignKey('user.id'), primary_key=True) 
     user_to_id =  Column(Integer, ForeignKey('user.id'), primary_key=True)
 
-
+    follower_relation = relationship('User', backref='user' )
+    
+    
+    
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True) #Define una columna id que es una clave primaria de tipo entero.
@@ -29,10 +33,10 @@ class User(Base):
     lastname = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False, unique=True)
 
-    comments = relationship('Comment', back_populates='user', lazy=True) 
-    posts = relationship('Post', back_populates='user', lazy=True) 
-    following = relationship('Follower', foreign_keys=[Follower.user_from_id], back_populates='following')
-    followers = relationship('Follower', foreign_keys=[Follower.user_to_id],back_populates='followers')
+    comments = relationship('Comment', backref='user', lazy=True) 
+    posts = relationship('Post', backref='user', lazy=True) 
+    
+   
 
 class Comment(Base):
     __tablename__ = "comment"
@@ -47,8 +51,8 @@ class Post(Base):
     id = Column(Integer, primary_key=True)
     user_id =  Column(Integer, ForeignKey('user.id'), nullable=False) 
 
-    comments = relationship('Comment', back_populates='post', lazy=True) 
-    media = relationship('Media', back_populates='post', lazy=True) 
+    comments = relationship('Comment', backref='post', lazy=True) 
+    media = relationship('Media', backref='post', lazy=True) 
 
 class Media(Base):
     __tablename__ = "media"
